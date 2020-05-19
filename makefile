@@ -1,4 +1,4 @@
-.PHONY: start docs stop restart format
+.PHONY: start docs stop restart format install
 
 docs:
 	docker-compose run --rm yarn gulp
@@ -13,3 +13,6 @@ stop:
 	docker-compose down --remove-orphans --volumes
 
 restart: stop start
+
+install:
+	docker-compose run --rm yarn
