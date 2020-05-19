@@ -16,7 +16,7 @@ See [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
 
 ## License
 
-See [`LICENSE.md`](./LICENSE.md).
+See [`LICENSE`](./LICENSE).
 
 ## Issues & feature requests
 
