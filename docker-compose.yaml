@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+    elm:
+        container_name: elm
+        image: aminnairi/elm:latest
+        user: elm
+        tty: true
+        working_dir: /home/elm
+        entrypoint: elm
+        volumes:
+            - .:/home/elm
+
+    yarn:
+        container_name: yarn
+        image: node:latest
+        user: node
+        tty: true
+        working_dir: /home/node
+        entrypoint: yarn
+        volumes:
+            - .:/home/node
+
+    nginx:
+        image: nginx:latest
+        container_name: nginx
+        restart: always
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./docs:/usr/share/nginx/html/calculator
+            - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+            - ./nginx/localhost.pem:/etc/nginx/ssl/localhost.pem
+            - ./nginx/localhost-key.pem:/etc/nginx/ssl/localhost-key.pem

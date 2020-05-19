@@ -1,0 +1,6 @@
+.cache
+.elm
+.yarn
+elm-stuff
+node_modules
+.yarnrc
