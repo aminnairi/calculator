@@ -1,5 +1,27 @@
 # calculator
 
+## Usage
+
+https://github.com/aminnairi/calculator/.
+
+> *works best on handheld devices*.
+
+## Contributing
+
+See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## Code of conduct
+
+See [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
+
+## License
+
+See [`LICENSE.md`](./LICENSE.md).
+
+## Issues & feature requests
+
+See [issues](./issues).
+
 ## Credits
 
 ### Application icon
