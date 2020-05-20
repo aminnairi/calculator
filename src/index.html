@@ -68,6 +68,8 @@
         <script>
             "use strict";
 
+            const isObject = target => Object.prototype.toString.call(target) === "[object Object]";
+
             window.addEventListener("load", () => {
                 if (!window) {
                     throw new ReferenceError("No window available.");
@@ -91,7 +93,27 @@
                     throw new ReferenceError("No div tag with id calculator found.");
                 }
 
-                window.Elm.Main.init({node: calculator});
+                const Main = window.Elm.Main.init({node: calculator});
+
+                if (!Main.ports || !isObject(Main.ports)) {
+                    throw new ReferenceError("No ports available in module Main.");
+                }
+
+                if (!Main.ports.onClick || !isObject(Main.ports.onClick)) {
+                    throw new ReferenceError("No onClick subscription available on main Module's ports.");
+                }
+
+                if (!Main.ports.onClick.subscribe || typeof Main.ports.onClick.subscribe !== "function") {
+                    throw new ReferenceError("Unable to subscribe to onClick subscription on main Module's ports.");
+                }
+
+                Main.ports.onClick.subscribe(() => {
+                    if (!window.navigator.vibrate || typeof window.navigator.vibrate !== "function") {
+                        return;
+                    }
+
+                    window.navigator.vibrate(50);
+                });
             });
         </script>
         
