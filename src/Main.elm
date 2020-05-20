@@ -1,18 +1,41 @@
-module Main exposing (main)
+port module Main exposing (main)
 
 import Browser
 import Html.Attributes
 import Html.Events
 import Html exposing (Html)
 
--- TYPES
 
-type Total =
-    Total String
+-- MAIN
 
 
-type Carry =
-    Carry String
+main : Program () Model Msg
+main =
+    Browser.element
+        { init          = init
+        , update        = update
+        , view          = view
+        , subscriptions = subscriptions
+        }
+
+-- INIT
+
+
+init : flags -> ( Model, Cmd Msg )
+init flags =
+    (   { operation = Noop
+            , carry     = Carry "0"
+            , total     = Total "0"
+        }
+    , Cmd.none
+    )
+
+
+type alias Model =
+    { operation : Operation
+    , carry     : Carry
+    , total     : Total
+    }
 
 
 type Operation
@@ -22,6 +45,54 @@ type Operation
     | Multiply
     | Modulo
     | Noop
+
+
+type Carry =
+    Carry String
+
+
+type Total =
+    Total String
+
+
+-- UPDATE
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Append digit ->
+            ( { model | total = appendDigit digit model.total }, onClick () )
+
+        Equals ->
+            (   { model
+                    | total     = totalFromOperation model.operation model.total model.carry
+                    , carry     = Carry "0"
+                    , operation = Noop
+                }
+            , onClick ()
+            )
+
+        SetOperation operation ->
+            (   { model
+                    | operation = operation
+                    , carry     = carryFromOperation operation model.total model.carry
+                    , total     = Total "0"
+                }
+            , onClick ()
+            )
+
+        Clear ->
+            ( { operation = Noop, carry = Carry "0", total = Total "0" }, onClick () )
+
+        Dot ->
+            ( { model | total = appendDot model.total }, onClick () )
+
+        Del ->
+            ( { model | total = delete model.total }, onClick () )
+
+        Inverse ->
+            ( { model | total = inverse model.total }, onClick () )
 
 
 type Msg
@@ -34,23 +105,6 @@ type Msg
     | Inverse
 
 
-type alias Model =
-    { operation : Operation
-    , carry     : Carry
-    , total     : Total
-    }
-
-
-init : Model
-init =
-    { operation = Noop
-    , carry     = Carry "0"
-    , total     = Total "0"
-    }
-
-
--- HELPER FUNCTIONS
-
 divideOrZero : Float -> Float -> Float
 divideOrZero a b =
     if b == 0 then
@@ -58,7 +112,6 @@ divideOrZero a b =
 
     else
         a / b
-
 
 
 moduloOrZero : Int -> Int -> Int
@@ -188,42 +241,6 @@ inverse (Total total) =
         |> Total
 
 
--- UPDATE
-
-
-update : Msg -> Model -> Model
-update msg model =
-    case msg of
-        Append digit ->
-            { model | total = appendDigit digit model.total }
-
-        Equals ->
-            { model
-                | total     = totalFromOperation model.operation model.total model.carry
-                , carry     = Carry "0"
-                , operation = Noop
-            }
-
-        SetOperation operation ->
-            { model
-                | operation = operation
-                , carry     = carryFromOperation operation model.total model.carry
-                , total     = Total "0"
-            }
-
-        Clear ->
-            { operation = Noop, carry = Carry "0", total = Total "0" }
-
-        Dot ->
-            { model | total = appendDot model.total }
-
-        Del ->
-            { model | total = delete model.total }
-
-        Inverse ->
-            { model | total = inverse model.total }
-
-
 -- VIEW
 
 
@@ -277,13 +294,12 @@ view model =
         ]
 
 
--- MAIN
+-- SUBSCRIPTIONS
 
 
-main : Program () Model Msg
-main =
-    Browser.sandbox
-        { init      = init
-        , update    = update
-        , view      = view
-        }
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
+
+
+port onClick : () -> Cmd msg
