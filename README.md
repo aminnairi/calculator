@@ -1,8 +1,8 @@
 # calculator
 
-## Usage
+## Application
 
-https://github.com/aminnairi/calculator/.
+https://aminnairi.github.io/calculator/
 
 > *works best on handheld devices*.
 
