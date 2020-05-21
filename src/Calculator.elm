@@ -1,4 +1,4 @@
-port module Main exposing (main)
+port module Calculator exposing (main)
 
 import Browser
 import Html.Attributes
@@ -76,7 +76,7 @@ update msg model =
         SetOperation operation ->
             ( { model
               | operation = operation
-              , carry     = carryFromOperation operation model.total model.carry
+              , carry     = carryFromOperation model.operation model.total model.carry
               , total     = Total "0"
               }
             , onClick ()
