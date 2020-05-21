@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en-US">
+    <!-- All invisble informations about this application. -->
     <head>
+        <!-- All meta information about the application. -->
         <meta charset="utf-8">
         <meta name="description" content="Calculator">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="theme-color" content="#ffffff">
 
+        <!-- All resources loaded with this application. -->
         <link rel="icon" href="/calculator/images/icon.png">
         <link rel="apple-touch-icon" href="/calculator/images/apple-touch-icon.png">
         <link rel="manifest" href="/calculator/manifest.webmanifest">
 
+        <!-- Title visible on search engines as well as the tab. -->
         <title>Calculator</title>
 
+        <!-- Styles applied for this application. -->
         <style>
             *, *::before, *::after {
                 margin: 0;
@@ -24,6 +29,8 @@
             html, body {
                 height: 100%;
                 width: 100%;
+                background-color: #004d40;
+                color: #b2dfdb;
             }
 
             #body {
@@ -42,6 +49,11 @@
                 padding: 10px;
             }
 
+            header > p:first-child {
+                font-size: 15px;
+                padding-right: 3px;
+            }
+
             main {
                 display: flex;
                 flex-direction: column;
@@ -56,8 +68,9 @@
             button {
                 flex: 1 0 calc(100vw / 4);
                 height: calc(100vw / 4);
-                border: 1px solid rgba(0, 0, 0, 0.1);
-                background-color: white;
+                border: 1px solid rgba(0,0,0,.05);
+                background-color: #00695c;
+                color: #80cbc4;
             }
 
             @media (orientation: landscape) {
@@ -67,62 +80,89 @@
             }
         </style>
     </head>
+
+    <!-- Visible content for this application. -->
     <body>
+        <!-- This is where Elm will inject the view, and will update it when events occurs. -->
         <div id="calculator"></div>
 
+        <!-- This is the Elm runtime, so this needs to remain on top of the main script. -->
         <script src="/calculator/index.js"></script>
+
+        <!-- This is the main script of the page where we initialize Elm and do the communication between the Elm runtime and the oustide world (JavaScript). -->
         <script>
+            // Strict mode to catch more errors.
             "use strict";
 
+            /**
+             * @param {any} target The something to check.
+             * @return {boolean} Whether something is a plain object or not.
+             */
             const isObject = target => Object.prototype.toString.call(target) === "[object Object]";
 
+            // This will be triggered when the page is fully loaded (including our view container). This is not really necessary but we may want to move this in the header in a near future and make it asynchronously loaded, so this will be needed at this moment.
             window.addEventListener("load", () => {
+                // Silly check, but does not cost a dime to check, right?
                 if (!window) {
                     throw new ReferenceError("No window available.");
                 }
 
+                // Check if the Elm runtime is there, just in case the script hasn't been properly loaded.
                 if (!window.Elm) {
                     throw new ReferenceError("Elm is not available in the window.");
                 }
 
-                if (!window.Elm.Main) {
-                    throw new ReferenceError("The Main module is not found in the Elm context.");
+                // Check if our main Calculator module is there.
+                if (!window.Elm.Calculator) {
+                    throw new ReferenceError("The Calculator module is not found in the Elm context.");
                 }
 
-                if (!window.Elm.Main.init || typeof window.Elm.Main.init !== "function") {
-                    throw new ReferenceError("No initialization function for the Main module.");
+                // Check that we can initialize our Calculator module.
+                if (!window.Elm.Calculator.init || typeof window.Elm.Calculator.init !== "function") {
+                    throw new ReferenceError("No initialization function for the Calculator module.");
                 }
 
+                // This is the container for the view used by the Elm runtime.
                 const calculator = document.getElementById("calculator");
 
+                // If the container is not available (most likely me messing up with something in the HTML).
                 if (calculator === null) {
                     throw new ReferenceError("No div tag with id calculator found.");
                 }
 
-                const Main = window.Elm.Main.init({node: calculator});
+                // This is our main Calcluator module that is being initialized.
+                const Calculator = window.Elm.Calculator.init({node: calculator});
 
-                if (!Main.ports || !isObject(Main.ports)) {
-                    throw new ReferenceError("No ports available in module Main.");
+                // Check if ports are available to do intercommunication between the JavaScript runtime <-> Elm Runtime.
+                if (!Calculator.ports || !isObject(Calculator.ports)) {
+                    throw new ReferenceError("No ports available in module Calculator.");
                 }
 
-                if (!Main.ports.onClick || !isObject(Main.ports.onClick)) {
+                // Check if our "port onClick : () -> Cmd msg" is available.
+                if (!Calculator.ports.onClick || !isObject(Calculator.ports.onClick)) {
                     throw new ReferenceError("No onClick subscription available on main Module's ports.");
                 }
 
-                if (!Main.ports.onClick.subscribe || typeof Main.ports.onClick.subscribe !== "function") {
+                // Check that we can subscribe to this port.
+                if (!Calculator.ports.onClick.subscribe || typeof Calculator.ports.onClick.subscribe !== "function") {
                     throw new ReferenceError("Unable to subscribe to onClick subscription on main Module's ports.");
                 }
 
-                Main.ports.onClick.subscribe(() => {
+                // Subscribe to any keypress on the calculator.
+                Calculator.ports.onClick.subscribe(() => {
+                    // Check that the current device supports vibration.
                     if (!window.navigator.vibrate || typeof window.navigator.vibrate !== "function") {
+                        // If it does not, no biggy, just do nothing (shame, shame, shame, shame, ...).
                         return;
                     }
 
+                    // There, we vibrate the device when a keypress of the calculator is pressed (this will do nothing if the device has vibration turned off).
                     window.navigator.vibrate(50);
                 });
             });
         </script>
         
+        <!-- We try to send a friendly message just in case JavaScript has been disabled by the client. -->
         <noscript>
             <h1>JavaScript disabled</h1>
 
