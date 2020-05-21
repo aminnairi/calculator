@@ -1,9 +1,28 @@
 {
-  "devDependencies": {
-    "del": "^5.1.0",
-    "gulp": "^4.0.2",
-    "gulp-htmlmin": "^5.0.1",
-    "gulp-imagemin": "^7.1.0",
-    "terser": "^4.6.13"
-  }
+    "name": "@aminnairi/calculator",
+    "version": "0.1.0",
+    "description": "Calculator",
+    "homepage": "https://github.com/aminnairi/calculator#readme",
+    "main": "docs/index.js",
+    "browser": "docs/index.js",
+    "license": "MIT",
+    "private": true,
+    "bugs": {
+        "url": "https://github.com/aminnairi/calculator/issues"
+    },
+    "author": {
+        "name": "Amin NAIRI",
+        "url": "https://github.com/aminnairi/"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/aminnairi/calculator.git"
+    },
+    "devDependencies": {
+        "del": "^5.1.0",
+        "gulp": "^4.0.2",
+        "gulp-htmlmin": "^5.0.1",
+        "gulp-imagemin": "^7.1.0",
+        "terser": "^4.6.13"
+    }
 }
