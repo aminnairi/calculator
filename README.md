@@ -2,6 +2,8 @@
 
 Calculator
 
+![Calculator animated image showing an example usage](https://i.ibb.co/jLpPPB9/Screen-Capture-select-area-20200521140250.gif)
+
 ## Application
 
 https://aminnairi.github.io/calculator/
