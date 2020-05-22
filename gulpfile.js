@@ -47,25 +47,12 @@ const IMAGEMIN_OPTIONS = [
     })
 ];
 
-task("assets", () => {
-    return src(resolve("src", "assets", "**", "*"))
-        .pipe(dest(resolve("docs")));
-});
-
 task("images", () => {
     return src(resolve("src", "images", "**", "*"))
         .pipe(imagemin(IMAGEMIN_OPTIONS))
         .pipe(dest(resolve("docs", "images")));
 });
 
-task("html", () => {
-    return src(resolve("src", "index.html"))
-        .pipe(htmlmin(HTMLMIN_OPTIONS))
-        .pipe(dest(resolve("docs")));
-});
-
 task("clean", () => {
     return remove([resolve("docs", "**", "*")]);
 });
-
-task("default", series("clean", parallel("html", "assets", "images")));
