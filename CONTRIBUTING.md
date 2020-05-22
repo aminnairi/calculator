@@ -63,4 +63,4 @@ $ git push
 
 ## Open a pull request
 
-[Open a pull request]().
+[Open a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
