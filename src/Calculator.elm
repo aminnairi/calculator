@@ -6,7 +6,7 @@ import Html.Events
 import Html exposing (Html)
 
 
--- MAIN
+-- MAIN 
 
 
 main : Program () Model Msg
@@ -73,15 +73,6 @@ update msg model =
             , onClick ()
             )
 
-        SetOperation operation ->
-            ( { model
-              | operation = operation
-              , carry     = carryFromOperation model.operation model.total model.carry
-              , total     = Total "0"
-              }
-            , onClick ()
-            )
-
         Clear ->
             ( { operation = Noop, carry = Carry "0", total = Total "0" }, onClick () )
 
@@ -94,10 +85,59 @@ update msg model =
         Inverse ->
             ( { model | total = inverse model.total }, onClick () )
 
+        AddNext ->
+            (   { model
+                    | carry     = carryFromOperation model.operation model.total model.carry
+                    , total     = Total "0"
+                    , operation = Add 
+                }
+                , onClick ()
+            )
+
+        DivideNext ->
+            (   { model
+                    | carry     = carryFromOperation model.operation model.total model.carry
+                    , total     = Total "0"
+                    , operation = Divide 
+                }
+                , onClick ()
+            )
+
+        MultiplyNext ->
+            (   { model
+                    | carry     = carryFromOperation model.operation model.total model.carry
+                    , total     = Total "0"
+                    , operation = Multiply 
+                }
+                , onClick ()
+            )
+
+        SubtractNext ->
+            (   { model
+                    | carry     = carryFromOperation model.operation model.total model.carry
+                    , total     = Total "0"
+                    , operation = Subtract 
+                }
+                , onClick ()
+            )
+
+        ModuloNext ->
+            (   { model
+                    | carry     = carryFromOperation model.operation model.total model.carry
+                    , total     = Total "0"
+                    , operation = Modulo 
+                }
+                , onClick ()
+            )
+
 
 type Msg
     = Append Char
-    | SetOperation Operation
+    | AddNext
+    | DivideNext
+    | MultiplyNext
+    | SubtractNext
+    | ModuloNext
     | Equals
     | Clear
     | Dot
@@ -175,13 +215,15 @@ computeFromOperation operation (Total total) (Carry carry) =
 
 totalFromOperation : Operation -> Total -> Carry -> Total
 totalFromOperation operation total carry =
-    computeFromOperation operation total carry
+    carry
+        |> computeFromOperation operation total
         |> Total
 
 
 carryFromOperation : Operation -> Total -> Carry -> Carry
 carryFromOperation operation total carry =
-    computeFromOperation operation total carry
+    carry
+        |> computeFromOperation operation total
         |> Carry
 
 
@@ -259,29 +301,29 @@ view model =
                 []
                 [ Html.button [ Html.Events.onClick Clear ] [ Html.text "A/C" ]
                 , Html.button [ Html.Events.onClick Inverse ] [ Html.text "+/-" ]
-                , Html.button [ Html.Events.onClick (SetOperation Modulo) ] [ Html.text "%" ]
-                , Html.button [ Html.Events.onClick (SetOperation Divide) ] [ Html.text "/" ]
+                , Html.button [ Html.Events.onClick ModuloNext ] [ Html.text "%" ]
+                , Html.button [ Html.Events.onClick DivideNext ] [ Html.text "/" ]
                 ]
             , Html.section
                 []
                 [ Html.button [ Html.Events.onClick (Append '7') ] [ Html.text "7" ]
                 , Html.button [ Html.Events.onClick (Append '8') ] [ Html.text "8" ]
                 , Html.button [ Html.Events.onClick (Append '9') ] [ Html.text "9" ]
-                , Html.button [ Html.Events.onClick (SetOperation Multiply) ] [ Html.text "x" ]
+                , Html.button [ Html.Events.onClick MultiplyNext ] [ Html.text "x" ]
                 ]
             , Html.section
                 []
                 [ Html.button [ Html.Events.onClick (Append '4') ] [ Html.text "4" ]
                 , Html.button [ Html.Events.onClick (Append '5') ] [ Html.text "5" ]
                 , Html.button [ Html.Events.onClick (Append '6') ] [ Html.text "6" ]
-                , Html.button [ Html.Events.onClick (SetOperation Subtract) ] [ Html.text "-" ]
+                , Html.button [ Html.Events.onClick SubtractNext ] [ Html.text "-" ]
                 ]
             , Html.section
                 []
                 [ Html.button [ Html.Events.onClick (Append '1') ] [ Html.text "1" ]
                 , Html.button [ Html.Events.onClick (Append '2') ] [ Html.text "2" ]
                 , Html.button [ Html.Events.onClick (Append '3') ] [ Html.text "3" ]
-                , Html.button [ Html.Events.onClick (SetOperation Add) ] [ Html.text "+" ]
+                , Html.button [ Html.Events.onClick AddNext ] [ Html.text "+" ]
                 ]
             , Html.section
                 []
