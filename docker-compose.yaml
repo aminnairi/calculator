@@ -21,6 +21,16 @@ services:
         volumes:
             - .:/home/node
 
+    node:
+        container_name: node
+        image: node:latest
+        user: node
+        tty: true
+        working_dir: /home/node
+        entrypoint: node
+        volumes:
+            - .:/home/node
+
     nginx:
         image: nginx:latest
         container_name: nginx
